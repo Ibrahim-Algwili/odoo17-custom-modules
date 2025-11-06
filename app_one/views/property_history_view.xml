@@ -1,0 +1,69 @@
+<odoo>
+<!-- Level Three -->
+
+    <!-- Tree View -->
+
+    <record id="property_history_tree" model="ir.ui.view">
+        <field name="name">property histrory tree</field>
+        <field name="model">property.history</field>
+        <field name="arch" type="xml">
+            <!-- (Permesions From Presentation Tier default is (0) for multi_edit , the others is (1) -->
+            <tree create="0" edit="0" delete="1">
+                <field name="user_id" />
+                <field name="property_id" />
+                <field name="old_state" />
+                <field name="new_state" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+
+    <record id="property_history_view_Form" model="ir.ui.view">
+        <field name="name">property history form</field>
+        <field name="model">property.history</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group >
+                            <field name="user_id" />
+                            <field name="property_id" />
+                        </group>
+                        <group >
+                            <field name="old_state" />
+                            <field name="new_state" />
+                            <field name="reason" />
+                        </group>
+                    </group>
+                    <!-- Lines & tabls -->
+                    <notebook>
+                        <page string="bedrooms">
+                            <field name="line_ids" readonly="1" >
+                                <tree>
+                                    <field name="description" />
+                                    <field name="area" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Window Action -->
+    <record id="property_history_action" model="ir.actions.act_window"> <!-- act_window (will open view when you click) -->
+        <field name="name">Property History</field>
+        <field name="res_model">property.history</field> <!-- model name -->
+    </record>
+
+    <menuitem
+        id="property_history_menu_item"
+        name="History"
+        parent="properties_menu"
+        action="property_history_action"
+        groups="app_one.property_managers_group"
+    />
+</odoo>

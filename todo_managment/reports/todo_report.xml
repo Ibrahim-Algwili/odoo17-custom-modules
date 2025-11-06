@@ -1,0 +1,13 @@
+<odoo>
+
+    <record id="todo_report" model="ir.actions.report">
+            <field name="name" >To-Do Report</field> <!-- will show to the user when he want to print the report -->
+            <field name="model" >todo.task</field>
+            <field name="report_type" >qweb-pdf</field> <!-- or (qweb-html) -->
+            <field name="binding_model_id" ref="model_todo_task"/>
+            <field name="binding_type">report</field> <!-- to make a button for the report -->
+            <field name="report_name">todo_managment.report_todo_task_document</field> <!-- put the template id here (myaddon.templateID) -->
+    </record>
+
+
+</odoo>

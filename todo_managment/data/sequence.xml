@@ -1,0 +1,11 @@
+<odoo>
+    <data noupdate="1">
+        <record id="sequence_for_task" model="ir.sequence">
+            <field name="name">Task Reference</field>
+            <field name="code">todo_seq</field>
+            <field name="prefix">TS/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+        </record>
+    </data>
+</odoo>

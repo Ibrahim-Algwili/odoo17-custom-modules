@@ -1,0 +1,58 @@
+<odoo>
+<!-- Level Three -->
+
+    <!-- Tree View -->
+
+    <record id="owner_view_tree" model="ir.ui.view">
+        <field name="name">owner tree</field>
+        <field name="model">owner</field>
+        <field name="arch" type="xml">
+            <tree multi_edit="1" >
+                <field name="name" />
+                <field name="phone" />
+                <field name="address" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+
+    <record id="owner_view_Form" model="ir.ui.view">
+        <field name="name">owner form</field>
+        <field name="model">owner</field>
+        <field name="arch" type="xml">
+            <form edit="1" create="1" delete="0">
+                <sheet>
+                    <!-- To make the name as header -->
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="General Info">
+                            <field name="phone" />
+                            <field name="address" />
+                        </group>
+                        <group string="Properties Has" >
+                            <field name="property_ids" widget="many2many_tags" edit="0"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="owner_action" model="ir.actions.act_window"> <!-- act_window (will open view when you click) -->
+        <field name="name">owner</field>
+        <field name="res_model">owner</field> <!-- model name -->
+    </record>
+
+    <menuitem
+        id="owner_menu_item"
+        name="Owners"
+        parent="configuration_menu"
+        action="owner_action"
+    />
+</odoo>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Groups -->
+    <record id="property_managers_group" model="res.groups">
+        <field name="name">Property Manager</field>
+        <field name="category_id" ref="app_one.property_category" /> <!-- linking the group to the category -->
+    </record>
+
+    <record id="property_users_group" model="res.groups">
+        <field name="name">Property User</field>
+        <field name="category_id" ref="app_one.property_category" /> <!-- linking the group to the category -->
+    </record>
+
+    <!-- Record Rules -->
+    <record id="property_record_rule_by_user" model="ir.rule" >
+        <field name="name">Property.by.user</field>
+        <field name="model_id" ref="app_one.model_property" />
+        <!-- domain conditions -->
+        <field name="domain_force" >[('create_uid' , '=' , user.id)]</field>
+        <!-- CRUD Permesions -->
+        <field name="perm_read"   eval="True" />
+        <field name="perm_write"  eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+    </record>
+</odoo>

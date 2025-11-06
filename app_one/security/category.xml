@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="property_category" model="ir.module.category">
+        <field name="name">Real Estate</field>
+    </record>
+</odoo>
