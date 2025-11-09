@@ -97,6 +97,7 @@
                             <field name="garden_area" readonly="state == 'closed'" />
                             <field name="garage" readonly="state == 'closed'" />
                             <field name="garden_orientation" readonly="state == 'closed'" />
+                            <field name="property_type_id" />
                             <field name="tag_ids" widget="many2many_tags" readonly="state == 'closed'" />
                         </group>
                         <group string="Relation">

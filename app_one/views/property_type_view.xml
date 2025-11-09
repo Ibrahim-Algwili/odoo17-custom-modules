@@ -1,0 +1,29 @@
+<odoo>
+
+    <record id="property_type_form_view" model="ir.ui.view">
+        <field name="name">Property Type Form</field>
+        <field name="model">property.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Window Action -->
+    <record id="property_type_action" model="ir.actions.act_window"> <!-- act_window (will open view when you click) -->
+        <field name="name">Property Type</field>
+        <field name="res_model">property.type</field> <!-- model name -->
+    </record>
+
+    <menuitem
+            id="property_type_menu_item"
+            name="Type"
+            parent="properties_menu"
+            action="property_type_action"
+    />
+</odoo>

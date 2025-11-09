@@ -1,0 +1,9 @@
+@font-face {
+    font-family : "JosefinSans";
+    src : url(/app_one/static/src/fonts/JosefinSans-Bold.ttf)
+}
+
+@font-face {
+    font-family : "BebasNeue";
+    src : url(/app_one/static/src/fonts/BebasNeue-Regular.ttf)
+}

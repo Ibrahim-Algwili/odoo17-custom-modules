@@ -14,6 +14,7 @@
         'views/building_view.xml',
         'views/owner_view.xml',
         'views/tag_view.xml',
+        'views/property_type_view.xml',
         'views/sale_order_view.xml',
         'views/res_partner_view.xml',
         'views/property_history_view.xml',
@@ -22,7 +23,8 @@
         'reports/property_report.xml',
     ] ,
     'assets' : {
-        'web.assets_backend' : ['app_one/static/src/css/property.css']
+        'web.assets_backend' : ['app_one/static/src/css/property.css'],
+        'web.report_assets_common' : ['app_one/static/src/css/font.css'],
     } ,
     'application' : True,
     'installable': True,
