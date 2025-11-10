@@ -19,6 +19,7 @@
         'views/res_partner_view.xml',
         'views/property_history_view.xml',
         'views/account_move_view.xml',
+        'views/property_offer_view.xml',
         'wizard/change_state_wizard.xml',
         'reports/property_report.xml',
     ] ,

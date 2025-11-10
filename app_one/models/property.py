@@ -6,6 +6,8 @@ from datetime import date
 from charset_normalizer.utils import is_latin
 import requests
 
+from odoo.tools import float_compare
+
 _logger = logging.getLogger(__name__)
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
@@ -24,17 +26,18 @@ class Property(models.Model):
     description = fields.Text(tracking=1)
     postcode = fields.Char(required=1)
     date_availability = fields.Date(tracking=1, default=date.today() + timedelta(days=90), copy=False)
-    expected_selling_date = fields.Date(tracking=1 )
+    expected_selling_date = fields.Date(tracking=1)
     is_late = fields.Boolean()
     expected_price = fields.Float(digits=(0, 2))  # how many digits after the (.)
     selling_price = fields.Float(digits=(0, 2), readonly=1, copy=False)
     diff = fields.Float(compute="_compute_diff", readonly=1)  # readonly (1 by default with compute)
     bedrooms = fields.Integer(default=2)
-    living_area = fields.Integer()
     facades = fields.Integer()
     garage = fields.Boolean(groups="app_one.property_manager_group")
     garden = fields.Boolean(required=1)
     garden_area = fields.Integer()
+    living_area = fields.Integer()
+    total_area = fields.Integer(compute="_compute_total_area")
     file = fields.Binary(string="file", attachment="True")
     garden_orientation = fields.Selection([
         ('north', 'North'),
@@ -59,6 +62,9 @@ class Property(models.Model):
     owner_address = fields.Char(related="owner_id.address", readonly=0)
     owner_phone = fields.Char(related="owner_id.phone", readonly=1)
 
+    offer_ids = fields.One2many('property.offer' , 'property_id')
+    best_price = fields.Float(compute="_compute_best_price")
+
     # State Field
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -75,7 +81,72 @@ class Property(models.Model):
     # Constraints on the Data Tier
     _sql_constraints = [
         ('unique_name', 'unique(name)', 'This name is Exist'),
+        # ('price_positive', 'CHECK(selling_price <= 0)', 'Selling Price Must be Positive'),
     ]
+
+    # Python Constraints
+    @api.constrains('selling_price', 'expected_price')
+    def _check_selling_price(self):
+        for rec in self:
+            # تأكد أن القيم موجودة
+            if not rec.expected_price or not rec.selling_price:
+                continue
+
+
+
+            # تحقق أن السعر موجب
+            if float_compare(rec.selling_price, 0.0, precision_digits=2) <= 0:
+                raise ValidationError("Selling Price should be greater than zero.")
+
+            # تحقق من نسبة 90%
+            limit_price = rec.expected_price * 0.9
+            if float_compare(rec.selling_price, limit_price,precision_digits=2) < 0:
+                raise ValidationError(
+                    f"Selling Price ({rec.selling_price}) shouldn't be less than 90% of Expected Price ({rec.expected_price})."
+                )
+
+    @api.constrains('expected_price')
+    def _check_expected_price(self):
+        for rec in self:
+            if rec.expected_price <= 0.0:
+                raise ValidationError('Expected Price should be Greater Than Zero')
+
+    @api.constrains('offer_ids')
+    def _check_offer_price(self):
+        for rec in self:
+            if rec.offer_ids and rec.offer_ids.price <= 0.0:
+                raise ValidationError('Offer Price should be Greater Than Zero')
+
+
+    def fix_selling_price(self):
+        for rec in self:
+            rec.search([('selling_price' , '<=' , 0.0)]).write({'selling_price' : 1.0})
+
+
+    @api.depends('offer_ids.price')
+    def _compute_best_price (self):
+        for rec in self :
+            if rec.offer_ids:
+                rec.best_price = max(rec.offer_ids.mapped('price'))
+            else:
+                rec.best_price = 0.0
+
+    @api.depends('garden_area' , 'living_area')
+    def _compute_total_area(self):
+        for rec in self:
+            if rec.garden_area and rec.living_area :
+                rec.total_area = rec.garden_area + rec.living_area
+            else:
+                rec.total_area = 0.0
+
+    @api.onchange('garden')
+    def _onchange_garden(self):
+        if self.garden:
+            self.garden_area = 10
+            self.garden_orientation = 'north'
+        else :
+            self.garden_area = None
+            self.garden_orientation = None
 
 
 

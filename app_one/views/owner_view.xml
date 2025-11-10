@@ -47,6 +47,7 @@
     <record id="owner_action" model="ir.actions.act_window"> <!-- act_window (will open view when you click) -->
         <field name="name">owner</field>
         <field name="res_model">owner</field> <!-- model name -->
+        <field name="view_mode">tree,form</field>
     </record>
 
     <menuitem

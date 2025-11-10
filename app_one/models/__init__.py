@@ -9,3 +9,4 @@ from . import building
 from . import property_history
 from . import account_move
 from . import property_type
+from . import property_offer

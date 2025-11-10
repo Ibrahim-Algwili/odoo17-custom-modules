@@ -87,14 +87,16 @@
                             <field name="selling_price" readonly="state == 'closed'" />
                             <field name="diff" readonly="state == 'closed'"/>
                             <field name="bedrooms" readonly="state == 'closed'" />
-                            <field name="living_area" readonly="state == 'closed'" />
                             <field name="facades" readonly="state == 'closed'" />
                             <field name="file" readonly="state == 'closed'" />
                             <field name="active" readonly="state == 'closed'" />
                         </group>
                         <group string="Additional Info">
+                            <field name="best_price"  />
                             <field name="garden" readonly="state == 'closed'" />
                             <field name="garden_area" readonly="state == 'closed'" />
+                            <field name="living_area" readonly="state == 'closed'" />
+                            <field name="total_area"  />
                             <field name="garage" readonly="state == 'closed'" />
                             <field name="garden_orientation" readonly="state == 'closed'" />
                             <field name="property_type_id" />
@@ -116,6 +118,21 @@
                                 <tree editable="button">
                                     <field name="description" />
                                     <field name="area" />
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Offers" groups="app_one.property_managers_group">
+                            <field name="offer_ids" readonly="state == 'closed'" >
+                                <tree editable="button">
+                                    <field name="price" />
+                                    <field name="partner_id" />
+                                    <!-- Offer -->
+                                    <button name="action_accept" type="object" string="Accept" icon="fa-check"
+                                        invisible="status == 'accepted'" />
+                                    <button name="action_refuse" type="object" string="Refuse" icon="fa-check"
+                                         invisible="status == 'refused'" />
+                                    <field name="status" />
                                 </tree>
                             </field>
                         </page>
