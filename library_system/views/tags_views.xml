@@ -1,0 +1,23 @@
+<odoo>
+
+    <record id="tags_tree" model="ir.ui.view">
+        <field name="name">tags.tree</field>
+        <field name="model">lib.tags</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="tags_window_action" model="ir.actions.act_window">
+            <field name="name">Tags</field>
+            <field name="res_model">lib.tags</field>
+            <field name="view_mode">tree</field>
+<!--            <field name="target">new</field>-->
+        </record>
+
+
+</odoo>

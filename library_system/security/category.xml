@@ -1,0 +1,5 @@
+<odoo>
+    <record id="library_category" model="ir.module.category">
+        <field name="name">Library</field>
+    </record>
+</odoo>

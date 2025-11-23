@@ -1,0 +1,33 @@
+<odoo>
+    <!-- Inherit Contact Form -->
+    <record id="view_partner_form_inherit_loans_button" model="ir.ui.view">
+        <field name="name">res.partner.form.loans.button</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet//div[@class='oe_button_box']" position="inside">
+
+                <button type="object"
+                        class="oe_stat_button"
+                        name="action_view_loans"
+                        icon="fa-book">
+                    <field name="loan_count" string="Loans" widget="statinfo"/>
+                </button>
+
+            </xpath>
+
+
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="MemberShip Type" groups="library_system.library_managers_group">
+                    <group>
+                        <field name="membership_type"/>
+                        <field name="max_books_allowed" readonly="1"/>
+                    </group>
+                </page>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

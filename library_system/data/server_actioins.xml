@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+
+        <!-- Server Action -->
+        <record id="action_cancel_borrow" model="ir.actions.server">
+            <field name="name">Cancel</field>
+            <field name="model_id" ref="library_system.model_library_loan"/>
+            <field name="binding_model_id" ref="model_library_loan"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_cancel()</field>
+        </record>
+
+    </data>
+</odoo>

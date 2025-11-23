@@ -1,0 +1,46 @@
+<odoo>
+
+     <!-- Menu Root -->
+    <menuitem id="library_root_menu"
+              name="Library"
+              sequence="10"
+              web_icon = "/library_system/static/description/icon.png"
+    />
+
+    <!-- Menu: Books -->
+    <menuitem id="library_books_menu"
+              name="Books"
+              parent="library_root_menu"
+              action="action_library_books"
+              sequence="20"
+    />
+
+    <menuitem id="library_configuration_menu"
+              name="Configuration"
+              parent="library_root_menu"
+              sequence="40"
+    />
+
+     <menuitem id="library_authors_menu"
+               name="Authors"
+               parent="library_configuration_menu"
+               action="author_window_action"
+               sequence="40"
+    />
+
+     <menuitem id="library_tags_menu"
+               name="Tags"
+               parent="library_configuration_menu"
+               action="tags_window_action"
+               sequence="50"
+    />
+
+    <menuitem id="menu_library_loans"
+              name="Loans"
+              parent="library_root_menu"
+              action="action_library_loans"
+              sequence="30"
+    />
+
+
+</odoo>

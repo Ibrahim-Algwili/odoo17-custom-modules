@@ -1,0 +1,13 @@
+<odoo>
+   <!-- Groups -->
+    <record id="library_managers_group" model="res.groups">
+        <field name="name">Library Manager</field>
+        <field name="category_id" ref="library_system.library_category" /> <!-- linking the group to the category -->
+    </record>
+
+    <record id="library_users_group" model="res.groups">
+        <field name="name">Library User</field>
+        <field name="category_id" ref="library_system.library_category" /> <!-- linking the group to the category -->
+    </record>
+
+</odoo>

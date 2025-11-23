@@ -1,0 +1,153 @@
+<odoo>
+    <!-- Loan Form View -->
+    <record id="library_loan_form_view" model="ir.ui.view">
+        <field name="name">library.loan.form</field>
+        <field name="model">library.loan</field>
+        <field name="arch" type="xml">
+            <form string="Library Loan">
+                <header>
+                    <!-- Confirm -->
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="btn-primary"
+                            invisible="state != 'draft' or not loan_line_ids"/>
+
+                    <!-- Return -->
+                    <button name="action_return" type="object" string="Return"
+                            class="btn-success"
+                            invisible="state != 'loaned'"/>
+
+                    <!-- Cancel -->
+                    <button name="action_cancel" type="object" string="Cancel"
+                            class="btn-secondary"
+                            invisible="state != 'draft'"/>
+
+                    <!-- Reset to Draft -->
+                    <button name="action_reset_draft" type="object" string="Reset to Draft"
+                            class="btn-warning"
+                            invisible="state != 'cancel'"/>
+
+                    <!-- Open Suggest Wizard -->
+                    <button name="action_open_suggestion_wizard" type="object" string="Suggest Books"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,loaned,returned,cancel"/>
+                </header>
+
+                <sheet>
+                     <!-- Ribbon Loaned -->
+                <widget name="web_ribbon"
+                        title="Loaned"
+                        bg_color="bg-success"
+                        invisible="state != 'loaned'"/>
+
+                <!-- Ribbon Returned -->
+                <widget name="web_ribbon"
+                        title="Returned"
+                        bg_color="bg-primary"
+                        invisible="state != 'returned'"/>
+
+                <!-- Ribbon Cancelled -->
+                <widget name="web_ribbon"
+                        title="Cancelled"
+                        bg_color="bg-danger"
+                        invisible="state != 'cancel'"/>
+
+                <!-- Ribbon Archived -->
+                <widget name="web_ribbon"
+                        title="Archived"
+                        bg_color="bg-secondary"
+                        invisible="active"/>
+
+
+                    <div>
+                        <h1><field name="ref"/></h1>
+                    </div>
+
+                    <group>
+                        <field name="borrower_id"/>
+                        <field name="loan_date"/>
+                        <field name="expected_return"/>
+                        <field name="actual_return" readonly="1"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Books">
+                            <field name="loan_line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id" domain="[('is_book','=',True)]"/>
+                                    <field name="quantity"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Loan Tree View -->
+    <record id="library_loan_tree_view" model="ir.ui.view">
+        <field name="name">library.loan.tree</field>
+        <field name="model">library.loan</field>
+        <field name="arch" type="xml">
+            <tree decoration-warning="state == 'loaned'"
+                  decoration-info="state == 'returned'"
+                  decoration-danger="is_overdue">
+                <field name="borrower_id"/>
+                <field name="loan_date"/>
+                <field name="expected_return"/>
+                <field name="actual_return"/>
+                <field name="state"/>
+                <field name="is_overdue" optional="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Loan Search View -->
+    <record id="library_loan_search_view" model="ir.ui.view">
+        <field name="name">library.loan.search.view</field>
+        <field name="model">library.loan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="borrower_id"/>
+                <field name="loan_date"/>
+                <field name="expected_return"/>
+                <field name="actual_return"/>
+
+                <!-- Filters -->
+                <filter name="active" string="Archived" domain="[('active', '=', False)]"/>
+                <filter name="overdue" string="Over Time" domain="[('is_overdue', '=', True)]"/>
+                <filter name="state_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="state_loaned" string="Loaned" domain="[('state', '=', 'loaned')]"/>
+                <filter name="state_returned" string="Returned" domain="[('state', '=', 'returned')]"/>
+                <filter name="state_cancelled" string="Cancelled" domain="[('state', '=', 'cancel')]"/>
+
+                <!-- Group by -->
+                <filter name="group_by_borrower" string="Borrower" context="{'group_by' : 'borrower_id'}"/>
+                <filter name="group_by_loan_date" string="Loan Date" context="{'group_by' : 'loan_date'}"/>
+                <filter name="group_by_expected_return" string="Expected Return" context="{'group_by' : 'expected_return'}"/>
+                <filter name="group_by_actual_return" string="Actual Return" context="{'group_by' : 'actual_return'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window Action for Loans -->
+    <record id="action_library_loans" model="ir.actions.act_window">
+        <field name="name">Library Loans</field>
+        <field name="res_model">library.loan</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new loan by clicking 'Create'.
+            </p>
+        </field>
+    </record>
+</odoo>
