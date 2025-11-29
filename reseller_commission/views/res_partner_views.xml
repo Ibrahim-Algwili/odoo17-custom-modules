@@ -1,0 +1,25 @@
+<odoo>
+
+    <record id="view_partner_form_inherit_yourmodule" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.yourmodule</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='function']" position="before">
+                <field name="is_reseller"/>
+            </xpath>
+
+            <!-- Reseller page -->
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+                <page name="commissions" string="Commisions">
+                    <group>
+                        <field name="commission_ids" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

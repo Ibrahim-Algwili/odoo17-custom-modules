@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_commission_settlement,access_commission_settlement,model_commission_settlement,,1,1,1,1
+access_commission_settlement_line,access_commission_settlement_line,model_commission_settlement_line,,1,1,1,1

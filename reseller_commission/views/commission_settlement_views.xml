@@ -1,0 +1,159 @@
+<odoo>
+
+    <!-- Tree View -->
+    <record id="commission_settlement_tree" model="ir.ui.view">
+        <field name="name">commission.settlement.tree</field>
+        <field name="model">commission.settlement</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'accepted'"
+                  decoration-info="state == 'draft'"
+                  decoration-danger="state == 'reclaimed'">
+                <field name="reseller_id"/>
+                <field name="period_from"/>
+                <field name="period_to"/>
+                <field name="currency_id" optional="1"/>
+                <field name="total_commission"/>
+                <field name="reclaim_bill_id"/>
+                <!-- Circle on The State -->
+                <field name="state" widget="badge"
+                       decoration-success="state == 'accepted'"
+                       decoration-info="state == 'draft'"
+                       decoration-danger="state == 'reclaimed'"
+                />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="commission_settlement_form" model="ir.ui.view">
+        <field name="name">commission.settlement.form</field>
+        <field name="model">commission.settlement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                    <!-- Buttons -->
+                    <button name="action_accepted" type="object" invisible="state != 'draft'"
+                            string="Accept Commession" class="btn-success"
+                    />
+<!--                    <button name="action_draft" type="object" invisible="state != 'accepted'"-->
+<!--                            string="Set to Draft" class="btn-primary"-->
+<!--                    />-->
+
+                    <!-- Status Bar -->
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+
+                    <!-- Ribbon Loaned -->
+                    <widget name="web_ribbon"
+                            title="Accepted"
+                            bg_color="bg-success"
+                            invisible="state != 'accepted'"/>
+                    <widget name="web_ribbon"
+                            title="Archived"
+                            bg_color="bg-danger"
+                            invisible="active == True"/>
+                    <widget name="web_ribbon"
+                            title="Reclaimed"
+                            bg_color="bg-danger"
+                            invisible="state != 'reclaimed'"/>
+
+                    <div class="oe_title">
+                        <label for="ref"/>
+                        <h1>
+                            <field name="ref" class="oe_inline" readonly="1"/>
+                        </h1>
+                    </div>
+
+
+                    <group>
+                        <field name="reseller_id" readonly="state != 'draft'"/>
+                        <field name="period_from" readonly="state != 'draft'"/>
+                        <field name="period_to" readonly="state != 'draft'"/>
+                        <field name="active" invisible="1"/>
+                        <field name="invoice_ids_used" invisible="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Commission Lines">
+                            <field name="settlement_line_ids" readonly="state != 'draft'">
+                                <tree editable="bottom" decoration-danger="is_refunded">
+                                    <field name="invoice_id"
+                                           domain="[
+                                                ('id', 'not in', parent.invoice_ids_used),
+                                                ('reseller_id', '=', parent.reseller_id),
+                                                ('move_type', '=', 'out_invoice'),
+                                                ('state', '=', 'posted'),
+                                                ('is_commission_accepted' , '=' , False),
+                                                ('commission_ready' , '=' , True), '|',
+                                                ('create_date' , '&gt;' , parent.period_from),
+                                                ('create_date' , '&lt;' , parent.period_to),
+                                                ('reversal_move_id', '=', False)
+                                            ]"/>
+                                    <field name="invoice_total" readonly="1" widget="monetary"/>
+                                    <field name="invoice_commission" readonly="1" widget="monetary"/>
+                                    <field name="currency_id" optional="1"/>
+                                    <field name="is_refunded" optional="1"/>
+                                </tree>
+                            </field>
+
+                            <!-- TOTAL COMMISSION SECTION -->
+                            <group>
+                                <group>
+                                    <label for="total_commission"/>
+                                    <div class="oe_left oe_bold">
+                                        <strong>
+                                            <field name="total_commission" widget="monetary"/>
+                                        </strong>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Loan Search View -->
+    <record id="commission_settlement_search_view" model="ir.ui.view">
+        <field name="name">commission.settlement.search.view</field>
+        <field name="model">commission.settlement</field>
+        <field name="arch" type="xml">
+            <search>
+
+                <!-- Filters -->
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="accepted" string="Accepted" domain="[('state', '=', 'accepted')]"/>
+                <filter name="reclaimed" string="Reclaimed" domain="[('state', '=', 'reclaimed')]"/>
+                <filter name="active" string="Active" domain="[('active', '=', False)]"/>
+
+                <!-- Group By -->
+                <filter name="reseller" string="ReSeller" context="{'group_by' : 'reseller_id'}"/>
+
+
+            </search>
+        </field>
+    </record>
+
+    <record id="cron_action" model="ir.cron">
+        <field name="name">Paid Invoices</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_update_commission_ready()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+
+
+    <!-- Window Action -->
+    <record id="commission_settlement_action" model="ir.actions.act_window">
+        <field name="name">Commission Settlement</field>
+        <field name="res_model">commission.settlement</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

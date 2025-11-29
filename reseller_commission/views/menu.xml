@@ -1,0 +1,18 @@
+<odoo>
+
+    <menuitem
+            id="menu_commision_root"
+            name="Commisions"
+            sequence="10"
+            web_icon="/reseller_commission/static/description/icon.png"
+    />
+
+    <menuitem
+            id="comm_settlment"
+            name="Commission Settlement"
+            sequence="20"
+            parent="menu_commision_root"
+            action="commission_settlement_action"
+    />
+
+</odoo>

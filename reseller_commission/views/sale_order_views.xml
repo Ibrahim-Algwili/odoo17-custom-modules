@@ -1,0 +1,22 @@
+<odoo>
+
+    <record id="sale_form_inherit" model="ir.ui.view">
+        <field name="name">sale.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Reseller -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="reseller_id" string="Reseller"
+                       domain="[('is_reseller', '=', True)]" widget="avatar_user"/>
+                <field name="commission_tot" />
+            </xpath>
+
+            <!-- Insert commision_rate the order_line tree -->
+            <xpath expr="//field[@name='order_line']/tree" position="inside">
+                <field name="comision_amount"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

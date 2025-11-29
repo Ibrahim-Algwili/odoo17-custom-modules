@@ -1,0 +1,109 @@
+<odoo>
+    <data>
+        <record id="commission_report" model="ir.actions.report">
+            <field name="name">Print Commission</field>
+            <field name="model">commission.settlement</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">reseller_commission.commision_report</field>
+            <field name="report_file">reseller_commission.commision_report</field>
+            <field name="binding_model_id" ref="model_commission_settlement"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+        <template id="commision_report">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                        <h1 style="font-family: 'BebasNeue';">Commission Report</h1>
+                        <style>
+                            table {
+                            width: 100%;
+                            border: 1px solid #b3addd;
+                            border-collapse: collapse;
+                            padding: 5px;
+                            }
+                            table th {
+                            text-align : center;
+                            border: 1px solid #b3addd;
+                            padding: 5px;
+                            background: #ffffff;
+                            color: #313030;
+                            font-style : italic;
+                            }
+                            table td {
+                            border: 1px solid #b3addd;
+                            text-align: center;
+                            padding: 5px;
+                            background: #ffffff;
+                            color: #313030;
+                            }
+                            .total {
+                            text-align: right;
+                            }
+                            h3 span {
+                            color : blue;
+                            }
+                        </style>
+                        <h3>Commission Settlement for :
+                            <span t-field="o.reseller_id"/>
+                        </h3>
+
+                        <table>
+                            <thead>
+                                <strong>
+                                    <th colspan="4">Commissions</th>
+                                </strong>
+                            </thead>
+                            <thead>
+                                <th>Invoice</th>
+                                <th>Total Invoice</th>
+                                <th>Commission Amount</th>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.settlement_line_ids" t-as="line">
+                                    <t t-if="line.is_refunded == False">
+                                        <tr>
+                                            <td>
+                                                <strong>
+                                                    <t t-esc="line.invoice_id.name"/>
+                                                </strong>
+                                            </td>
+                                            <td>
+                                                <strong>
+                                                    <t t-esc="line.invoice_total"/>
+                                                    $
+                                                </strong>
+                                            </td>
+                                            <td>
+                                                <strong>
+                                                    <t t-esc="line.invoice_commission"/>
+                                                    $
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+
+                            </tbody>
+                        </table>
+
+                        <br/>
+                        <hr/>
+
+                        <div class="total">
+                            <strong>
+                                <p>Total Commission</p>
+                            </strong>
+                            <h5 t-field="o.total_commission"/>
+                        </div>
+
+                    </t>
+                </t>
+
+            </t>
+        </template>
+
+    </data>
+
+</odoo>
