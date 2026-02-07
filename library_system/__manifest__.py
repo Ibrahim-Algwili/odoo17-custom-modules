@@ -5,6 +5,7 @@
     'sequence': 10,
     'description': """Full Library Management System integrated with products, sales, purchase, and inventory.""",
     'category': 'Services/Library',
+    'license': 'LGPL-3',
     'author': 'Your Name',
     'website': 'https://www.yourwebsite.com',
     'depends': ['base', 'product', 'stock', 'sale', 'purchase', 'mail'],

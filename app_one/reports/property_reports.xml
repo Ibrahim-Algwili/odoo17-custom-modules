@@ -1,0 +1,20 @@
+<odoo>
+    <record id="property_report" model="ir.actions.report">
+        <field name="name">Property Report</field> <!-- will show to the user when he want to print the report -->
+        <field name="model">property</field>
+        <field name="report_type">qweb-pdf</field> <!-- or (qweb-pdf) -->
+        <field name="binding_model_id" ref="model_property"/>
+        <field name="binding_type">report</field> <!-- to make a button for the report -->
+        <field name="report_name">app_one.property_report_template</field> <!-- put the template id here (myaddon.templateID) -->
+    </record>
+
+    <record id="property_report_two" model="ir.actions.report">
+        <field name="name">Property Report two</field> <!-- will show to the user when he want to print the report -->
+        <field name="model">property</field>
+        <field name="report_type">qweb-html</field> <!-- or (qweb-pdf) -->
+        <field name="binding_model_id" ref="model_property"/>
+        <field name="binding_type">report</field> <!-- to make a button for the report -->
+        <field name="report_name">app_one.property_report_template_two</field> <!-- put the template id here (myaddon.templateID) -->
+    </record>
+
+</odoo>

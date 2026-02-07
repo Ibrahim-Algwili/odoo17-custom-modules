@@ -1,10 +1,11 @@
 {
-    'name' : 'Real State',
-    'author' : 'Ibrahim Ali',
-    'category' : '' ,
-    'version' : '17.0.0.1.0',
-    'depends' : ['base'  , 'sale'  , 'account' , 'mail' , 'contacts'],
-    'data' : [
+    'name': 'Real State',
+    'author': 'Ibrahim Ali',
+    'category': '',
+    'version': '17.0.0.1.0',
+    'license': 'LGPL-3',
+    'depends': ['base', 'sale', 'purchase', 'account', 'mail', 'contacts'],
+    'data': [
         'security/category.xml',
         'security/security.xml',
         'security/ir.model.access.csv',
@@ -18,16 +19,18 @@
         'views/sale_order_view.xml',
         'views/res_partner_view.xml',
         'views/property_history_view.xml',
+        'views/purchase_order_views.xml',
         'views/account_move_view.xml',
         'views/property_offer_view.xml',
         'wizard/change_state_wizard.xml',
-        'reports/property_report.xml',
-    ] ,
-    'assets' : {
-        'web.assets_backend' : ['app_one/static/src/css/property.css'],
-        'web.report_assets_common' : ['app_one/static/src/css/font.css'],
-    } ,
-    'application' : True,
+        'reports/property_templates.xml',
+        'reports/property_reports.xml',
+    ],
+    'assets': {
+        'web.assets_backend': ['app_one/static/src/css/property.css'],
+        'web.report_assets_common': ['app_one/static/src/css/font.css'],
+    },
+    'application': True,
     'installable': True,
 
 }

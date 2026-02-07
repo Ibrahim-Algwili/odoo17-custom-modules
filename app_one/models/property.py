@@ -9,7 +9,7 @@ import requests
 from odoo.tools import float_compare
 
 _logger = logging.getLogger(__name__)
-from odoo import models, fields, api
+from odoo import models, fields, api, Command
 from odoo.exceptions import ValidationError
 from odoo.tools.populate import compute
 from datetime import timedelta
@@ -33,7 +33,7 @@ class Property(models.Model):
     diff = fields.Float(compute="_compute_diff", readonly=1)  # readonly (1 by default with compute)
     bedrooms = fields.Integer(default=2)
     facades = fields.Integer()
-    garage = fields.Boolean(groups="app_one.property_manager_group")
+    garage = fields.Boolean()
     garden = fields.Boolean(required=1)
     garden_area = fields.Integer()
     living_area = fields.Integer()
@@ -62,7 +62,7 @@ class Property(models.Model):
     owner_address = fields.Char(related="owner_id.address", readonly=0)
     owner_phone = fields.Char(related="owner_id.phone", readonly=1)
 
-    offer_ids = fields.One2many('property.offer' , 'property_id')
+    offer_ids = fields.One2many('property.offer', 'property_id')
     best_price = fields.Float(compute="_compute_best_price")
 
     # State Field
@@ -79,10 +79,10 @@ class Property(models.Model):
     active = fields.Boolean(default=True)  # this used for Archiving
 
     # Constraints on the Data Tier
-    _sql_constraints = [
-        ('unique_name', 'unique(name)', 'This name is Exist'),
-        # ('price_positive', 'CHECK(selling_price <= 0)', 'Selling Price Must be Positive'),
-    ]
+    # _sql_constraints = [
+    #     ('unique_name', 'unique(name)', 'This name is Exist'),
+    #     # ('price_positive', 'CHECK(selling_price <= 0)', 'Selling Price Must be Positive'),
+    # ]
 
     # Python Constraints
     @api.constrains('selling_price', 'expected_price')
@@ -92,15 +92,13 @@ class Property(models.Model):
             if not rec.expected_price or not rec.selling_price:
                 continue
 
-
-
             # تحقق أن السعر موجب
             if float_compare(rec.selling_price, 0.0, precision_digits=2) <= 0:
                 raise ValidationError("Selling Price should be greater than zero.")
 
             # تحقق من نسبة 90%
             limit_price = rec.expected_price * 0.9
-            if float_compare(rec.selling_price, limit_price,precision_digits=2) < 0:
+            if float_compare(rec.selling_price, limit_price, precision_digits=2) < 0:
                 raise ValidationError(
                     f"Selling Price ({rec.selling_price}) shouldn't be less than 90% of Expected Price ({rec.expected_price})."
                 )
@@ -117,24 +115,22 @@ class Property(models.Model):
             if rec.offer_ids and rec.offer_ids.price <= 0.0:
                 raise ValidationError('Offer Price should be Greater Than Zero')
 
-
     def fix_selling_price(self):
         for rec in self:
-            rec.search([('selling_price' , '<=' , 0.0)]).write({'selling_price' : 1.0})
-
+            rec.search([('selling_price', '<=', 0.0)]).write({'selling_price': 1.0})
 
     @api.depends('offer_ids.price')
-    def _compute_best_price (self):
-        for rec in self :
+    def _compute_best_price(self):
+        for rec in self:
             if rec.offer_ids:
                 rec.best_price = max(rec.offer_ids.mapped('price'))
             else:
                 rec.best_price = 0.0
 
-    @api.depends('garden_area' , 'living_area')
+    @api.depends('garden_area', 'living_area')
     def _compute_total_area(self):
         for rec in self:
-            if rec.garden_area and rec.living_area :
+            if rec.garden_area and rec.living_area:
                 rec.total_area = rec.garden_area + rec.living_area
             else:
                 rec.total_area = 0.0
@@ -144,11 +140,9 @@ class Property(models.Model):
         if self.garden:
             self.garden_area = 10
             self.garden_orientation = 'north'
-        else :
+        else:
             self.garden_area = None
             self.garden_orientation = None
-
-
 
     @api.depends('create_time')
     def _compute_next_time(self):
@@ -211,6 +205,154 @@ class Property(models.Model):
     #             raise ValidationError('expected price should lower than 100 , '
     #                                   'and not be 0 or 5')
 
+    # -----------------------------------------
+    # --------- Special Commands --------------
+    # -----------------------------------------
+
+    def create_command(self):
+
+        # o2m = [[0,0,{}] , [0,0,{}] , [0,0,{}] , ...]
+        # o2m = [Command.create({}) , Command.create({}) , ...]
+
+        vals_list = [
+            {
+                'priority': '0',
+                'partner_id': 26,
+                'partner_ref': False,
+                'company_id': 1,
+                'currency_id': 1,
+                'date_order': '2025-12-16 09:09:43',
+                'date_planned': '2025-12-16 09:09:43',
+                'order_line': [
+                    [  # Line 1
+                        # and you can use Command too
+                        # Command.create()
+                        0,
+                        0,
+                        {
+                            'display_type': False,
+                            'product_uom': 1,
+                            'sequence': 10,
+                            'product_id': 37,
+                            'name': '[DESK0005] Customizable Desk (Custom, White)',
+                            'date_planned': '2025-12-16 09:09:43',
+                            'move_dest_ids': [
+
+                            ],
+                            'propagate_cancel': True,
+                            'product_qty': 1,
+                            'qty_received_manual': 0,
+                            'price_unit': 0,
+                            'taxes_id': [
+                                [
+                                    4,
+                                    2
+                                ]
+                            ],
+                            'discount': 0
+                        }
+                    ],
+
+                    [  # Line 2
+
+                        0,
+                        0,
+                        {
+                            'display_type': False,
+                            'product_uom': 1,
+                            'sequence': 10,
+                            'product_id': 37,
+                            'name': '[DESK0005] Customizable Desk (Custom, White)',
+                            'date_planned': '2025-12-16 09:09:43',
+                            'move_dest_ids': [
+
+                            ],
+                            'propagate_cancel': True,
+                            'product_qty': 1,
+                            'qty_received_manual': 0,
+                            'price_unit': 0,
+                            'taxes_id': [
+                                [
+                                    4,
+                                    2
+                                ]
+                            ],
+                            'discount': 0
+                        }
+                    ]
+                ],
+                'notes': False,
+                'user_id': 2,
+                'origin': False,
+                'incoterm_id': False,
+                'incoterm_location': False,
+                'payment_term_id': 6,
+                'fiscal_position_id': False
+            }
+        ]
+
+        self.env['purchase.order'].create(vals_list)
+        print('Record Created Successfully')
+
+    def update_command(self):
+        order = self.env['purchase.order'].browse(16)
+        print('ids is', order.order_line.ids)
+
+        # vals_list = [
+        #     [1,27,{'price_unit':100}],
+        #     [1,28 ,{'price_unit':200}],
+        # ]
+
+        vals_list = [
+            Command.update(27, {'price_unit': 1000}),
+            Command.update(28, {'price_unit': 2000}),
+        ]
+
+        order.write({"order_line": vals_list})
+
+    def delete_command(self):
+        order = self.env['purchase.order'].browse(16)
+        print('id is', order.order_line.ids)
+
+        # it's necessory to put them in a list []
+        delete_lines = [
+            (2, 40),  # to unlink it from the lines use (2,id)
+        ]
+
+        order.write({"order_line": delete_lines})
+        order.write({"order_line": [Command.delete(38)]})
+
+    def link_command(self):
+        partner = self.env['res.partner'].browse(26)
+
+        partner.write({'category_id': [
+            (4, 1),
+            (4, 4),
+            (4, 5),
+            (4, 6),
+        ]
+        })
+
+        partner.write({'category_id': [Command.link(7)]})
+
+
+    def unlink_command(self):
+        partner = self.env['res.partner'].browse(26)
+
+        partner.write({'category_id': [
+            (3, 1),
+            (3, 5),
+        ]})
+
+
+
+    def clear_command(self):
+        partner = self.env['res.partner'].browse(26)
+
+        partner.write({'category_id': [[5]]})
+        partner.write({'category_id': [Command.clear()]})
+
+    # ------------------------------------------------------------------------------------------------------
 
     # -- State Actions --
     def action_draft(self):
@@ -262,6 +404,11 @@ class Property(models.Model):
                                            ('postcode', 'in', ['21', '22', '23'])
                                            ]))
 
+
+
+    # --------------------------------------
+    # ------------.env Object --------------
+    # --------------------------------------
     def Env_action(self):
 
         # create
@@ -285,9 +432,19 @@ class Property(models.Model):
 
         print(self.env.context)
 
-        print(self.env.context)
+        print(self._context)
 
         print(self.env.cr)  # Cursor
+
+        # ----------------------------------
+        # change the (env & cursor)
+        with self.pool.cursor() as cursor:
+            self.env['res.partner'].with_env(self.env(cr=cursor)).create({
+                'name': 'ali Khalefa',
+            })
+
+        # if you don't have access rights use sudo()
+        self.env['res.partner'].sudo().create({"name": "Ahmed sudo()"})
 
     # CRUD Operations (Create , Read , Update , Delete)
 
@@ -321,6 +478,10 @@ class Property(models.Model):
         print("inside unlink Method")
         return res
 
+    def copy(self):
+        res = super().copy()
+        res['name'] = self.name + ' (Copy)'
+        return res
     # ---- History logic Handling ------
 
     def create_history_record(self, old_state, new_state, reason=""):
@@ -369,6 +530,18 @@ class Property(models.Model):
         print(response.status_code)  # response 200 if success
         print(response.content)  # data in json
 
+
+
+    # ---------------------- XLSX Report -------------------------------
+    def print_xlsx_report(self):
+        '''
+        :return: URL Action for the EndPoint We Created
+        '''
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/property/excel/report/{self.env.context.get("active_ids")}', # To get the Active or Selected Records
+            'target' : 'new',
+        }
 
 class PropertyLine(models.Model):
     _name = 'property.line'

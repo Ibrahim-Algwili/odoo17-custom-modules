@@ -3,7 +3,8 @@
     'version': '1.0',
     'author': 'Ibrahim Ali',
     'category': 'Productivity',
-    'depends': ['base' , 'mail'],
+    'license': 'LGPL-3',
+    'depends': ['base' , 'mail','sale'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

@@ -1,6 +1,7 @@
 {
     'name': 'Reseller Commission Management',
     'version': '1.0',
+    'license': 'LGPL-3',
     'depends': ['base', 'product', 'stock', 'sale', 'purchase', 'mail'],
     'data': [
         'security/ir.model.access.csv',
