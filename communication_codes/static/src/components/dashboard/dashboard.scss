@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
+
+
+body, .o_main_navbar, .o_control_panel, .o_breadcrumb, .o_list_view, .o_form_view, .o_kanban_view {
+    font-family: 'Cairo', sans-serif !important;
+}
+
+/* لضمان تطبيق الخط على العناوين والأزرار */
+h1, h2, h3, h4, h5, h6, p, span, div, .btn, .dropdown-item {
+    font-family: 'Cairo', sans-serif !important;
+}
+
 .o_comm_dashboard {
     font-family: 'Segoe UI', Arial, sans-serif;
 
