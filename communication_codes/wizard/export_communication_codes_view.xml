@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- تصدير إلى Excel -->
+    <record id="view_export_communication_codes_wizard" model="ir.ui.view">
+        <field name="name">export.communication.codes.wizard.form</field>
+        <field name="model">export.communication.codes.wizard</field>
+        <field name="arch" type="xml">
+            <form string="تصدير إلى Excel">
+                <group invisible="state != 'draft'">
+                    <group>
+                        <field name="export_all" string="تصدير جميع السجلات"/>
+                        <field name="code_ids" string="اختر السجلات" 
+                               invisible="export_all == True"
+                               widget="many2many_tags"/>
+                    </group>
+                </group>
+                
+                <group invisible="state != 'done'">
+                    <group>
+                        <field name="filename" string="اسم الملف" readonly="1"/>
+                        <button name="action_download" string="تحميل الملف" type="object"
+                                class="oe_highlight" icon="fa-download"/>
+                    </group>
+                </group>
+                
+                <footer>
+                    <button name="action_export" string="تصدير" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_reset" string="إعادة تعيين" type="object"
+                            invisible="state == 'draft'"/>
+                    <button string="إغلاق" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

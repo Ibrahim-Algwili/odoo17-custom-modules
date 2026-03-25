@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="communication_codes_comp_rule" model="ir.rule">
+        <field name="name">Communication Codes: multi-company</field>
+        <field name="model_id" ref="communication_codes.model_communication_codes"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

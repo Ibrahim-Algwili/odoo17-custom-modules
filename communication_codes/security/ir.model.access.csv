@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_communication_codes_manager,communication.codes.manager,model_communication_codes,base.group_system,1,1,1,1
+access_communication_codes_user,communication.codes.user,model_communication_codes,base.group_user,1,0,1,0
+access_import_communication_codes_manager,import.communication.codes.manager,model_import_communication_codes_wizard,base.group_system,1,1,1,1
+access_import_communication_codes_user,import.communication.codes.user,model_import_communication_codes_wizard,base.group_user,1,0,1,0
+access_export_communication_codes_manager,export.communication.codes.manager,model_export_communication_codes_wizard,base.group_system,1,1,1,1
+access_export_communication_codes_user,export.communication.codes.user,model_export_communication_codes_wizard,base.group_user,1,0,1,0

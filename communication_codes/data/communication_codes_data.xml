@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ترقيم تسلسلي -->
+    <record id="seq_communication_codes" model="ir.sequence">
+        <field name="name">Communication Codes Sequence</field>
+        <field name="code">communication.codes</field>
+        <field name="prefix">SIM-</field>
+        <field name="padding">5</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+</odoo>
