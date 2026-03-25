@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import html2text
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -71,7 +72,7 @@ class ExportCommunicationCodesWizard(models.TransientModel):
         # تنسيق الرأس
         header_font = Font(bold=True, color='FFFFFF')
         header_fill = PatternFill(start_color='366092', end_color='366092', fill_type='solid')
-        header_alignment = Alignment(horizontal='center', vertical='center')
+        header_alignment = Alignment(horizontal='center', vertical='center', wrapText=True)
         
         # رؤوس الأعمدة
         headers = [
@@ -89,21 +90,15 @@ class ExportCommunicationCodesWizard(models.TransientModel):
             'تاريخ التسليم',
             'ملاحظات',
         ]
-        
-        # إضافة رؤوس الأعمدة
-        for col_idx, header in enumerate(headers, start=1):
-            cell = ws.cell(row=1, column=col_idx, value=header)
-            cell.font = header_font
-            cell.fill = header_fill
-            cell.alignment = header_alignment
-        
+
+
         # تحويل القيم للعرض
         code_system_map = {
             'prepaid': 'دفع مسبق',
             'monthly_invoice': 'فاتورة شهرية',
             'other': 'أخرى',
         }
-        
+
         code_status_map = {
             'in_stock': 'في المخزن',
             'delivered': 'تم التسليم',
@@ -115,22 +110,45 @@ class ExportCommunicationCodesWizard(models.TransientModel):
             'original': 'الأصلي',
             'new_version': 'إصدار شفرة جديد',
         }
-        
-        # إضافة البيانات
+
+        # إضافة رؤوس الأعمدة
+        for col_idx, header in enumerate(headers, start=1):
+            cell = ws.cell(row=1, column=col_idx, value=header)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+
+        # تعريف تنسيق البيانات (أضفه مع تعريفات الـ Header في الأعلى)
+        data_alignment = Alignment(horizontal='center', vertical='center', wrapText=True)
+
+        # إضافة البيانات داخل الـ Loop
         for row_idx, code in enumerate(codes, start=2):
-            ws.cell(row=row_idx, column=1, value=code.name or '')
-            ws.cell(row=row_idx, column=2, value=code.employee_id.name or '')
-            ws.cell(row=row_idx, column=3, value=code.job_id.name or '')
-            ws.cell(row=row_idx, column=4, value=code.company_id.name or '')
-            ws.cell(row=row_idx, column=5, value=code.branch_id.name or '')
-            ws.cell(row=row_idx, column=6, value=code.city or '')
-            ws.cell(row=row_idx, column=7, value=code.code_number or '')
-            ws.cell(row=row_idx, column=8, value=code_system_map.get(code.code_system, ''))
-            ws.cell(row=row_idx, column=9, value=code.monthly_balance or 0)
-            ws.cell(row=row_idx, column=10, value=code_status_map.get(code.code_status, ''))
-            ws.cell(row=row_idx, column=11, value=code_version_map.get(code.code_version, ''))
-            ws.cell(row=row_idx, column=12, value=str(code.delivery_date) if code.delivery_date else '')
-            ws.cell(row=row_idx, column=13, value=code.notes or '')
+            # مصفوفة القيم لتسهيل التكرار والتنسيق
+            row_values = [
+                code.name or '',
+                code.employee_id.name or '',
+                code.job_id.name or '',
+                code.company_id.name or '',
+                code.branch_id.name or '',
+                code.city or '',
+                code.code_number or '',
+                code_system_map.get(code.code_system, ''),
+                code.monthly_balance or 0,
+                code_status_map.get(code.code_status, ''),
+                code_version_map.get(code.code_version, ''),
+                str(code.delivery_date) if code.delivery_date else '',
+                # تنظيف النص من المسافات والأسطر الزائدة الناتجة عن HTML
+                html2text.html2text(code.notes or '').strip()
+            ]
+
+            for col_idx, value in enumerate(row_values, start=1):
+                cell = ws.cell(row=row_idx, column=col_idx, value=value)
+                # تطبيق التوسيط على كل خلية في السطر
+                cell.alignment = data_alignment
+
+            #  زيادة ارتفاع السطر ليكون التوسيط العمودي واضحاً
+            ws.row_dimensions[row_idx].height = 35
+
         
         # تعديل عرض الأعمدة
         column_widths = [15, 20, 20, 20, 20, 15, 20, 20, 15, 15, 20, 20, 30]

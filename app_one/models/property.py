@@ -460,8 +460,8 @@ class Property(models.Model):
         return res
 
     @api.model
-    def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
-        res = super()._search(domain, offset=0, limit=None, order=None, access_rights_uid=None)
+    def _search(self, domain, offset=0, limit=None, order=None):
+        res = super()._search(domain, offset=0, limit=None, order=None)
         # Logic
         print("inside _search Method")
         return res

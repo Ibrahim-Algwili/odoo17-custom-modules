@@ -15,8 +15,8 @@
         - تتبع التغييرات
         - إصدار شفرات جديدة
     """,
-    'author': 'SIM Management',
-    'website': 'https://example.com',
+    'author': '',
+    'website': '',
     'license': 'LGPL-3',
     'depends': [
         'base',
@@ -32,9 +32,16 @@
         'wizard/import_communication_codes_view.xml',
         'wizard/export_communication_codes_view.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'web/static/lib/Chart/Chart.js',
+            'communication_codes/static/src/components/dashboard/dashboard.js',
+            'communication_codes/static/src/components/dashboard/dashboard.xml',
+            'communication_codes/static/src/components/dashboard/dashboard.scss',
+        ],
+    },
     'demo': [],
     'installable': True,
     'application': True,
     'auto_install': False,
 }
-

@@ -1,0 +1,51 @@
+.o_comm_dashboard {
+    font-family: 'Segoe UI', Arial, sans-serif;
+
+    // Header Style
+    .dashboard_header {
+        background-color: #1a414e; // اللون الداكن في الصورة
+        border-bottom: 3px solid #d4a017; // الخط الذهبي
+
+        .company_logo_box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    // KPI Cards
+    .kpi_card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+
+        .kpi_icon_box {
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    // Helper Colors
+    .bg-primary-light { background: #e7f1ff; }
+    .bg-success-light { background: #e6ffed; }
+    .bg-warning-light { background: #fffde6; }
+    .bg-danger-light { background: #ffebeb; }
+
+    // Progress Bars
+    .progress-bar { background-color: #1a414e !important; }
+
+    .x-small { font-size: 0.75rem; }
+
+    table tr {
+        transition: background 0.2s;
+        &:hover { background-color: #f8f9fa; }
+    }
+}

@@ -7,24 +7,29 @@
         <field name="arch" type="xml">
             <form string="تصدير إلى Excel">
                 <group invisible="state != 'draft'">
+                    <field name="state" invisible="1"/>
                     <group>
                         <field name="export_all" string="تصدير جميع السجلات"/>
-                        <field name="code_ids" string="اختر السجلات" 
+                        <field name="code_ids" string="اختر السجلات"
                                invisible="export_all == True"
                                widget="many2many_tags"/>
                     </group>
                 </group>
-                
+
                 <group invisible="state != 'done'">
                     <group>
                         <field name="filename" string="اسم الملف" readonly="1"/>
-                        <button name="action_download" string="تحميل الملف" type="object"
-                                class="oe_highlight" icon="fa-download"/>
+                        <button name="action_download"
+                                string="تحميل الملف"
+                                type="object"
+                                class="oe_highlight px-4"
+                                icon="fa-download"
+                                style="min-width: 150px;"/>
                     </group>
                 </group>
-                
+
                 <footer>
-                    <button name="action_export" string="تصدير" type="object" 
+                    <button name="action_export" string="تصدير" type="object"
                             class="oe_highlight" invisible="state != 'draft'"/>
                     <button name="action_reset" string="إعادة تعيين" type="object"
                             invisible="state == 'draft'"/>

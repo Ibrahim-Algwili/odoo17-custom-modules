@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="communication_codes.Dashboard">
+        <div class="o_action_manager o_comm_dashboard bg-light">
+            <div class="dashboard_header p-3 d-flex justify-content-between align-items-center shadow-sm">
+                <div class="header_left">
+                    <span class="text-white-50 small">إدارة ومتابعة شفرات الاتصالات للموظفين</span>
+                </div>
+                <div class="header_center text-center">
+                    <div class="company_logo_box px-4 py-1 rounded-3">
+                        <h5 class="mb-0 fw-bold text-white">WHIBA HOLDING</h5>
+                    </div>
+                    <div class="mt-1">
+                        <small class="text-white-50">
+                            <i class="fa fa-shield me-1"></i> نظام إدارة شفرات الاتصالات
+                        </small>
+                    </div>
+                </div>
+                <div class="header_right text-end text-white">
+                    <h5 class="mb-0 fw-bold text-white-50">شركة وهيبة القابضة</h5>
+                    <small class="text-white-50">Whiba Holding <i class="fa fa-crown text-warning ms-1"></i></small>
+                </div>
+            </div>
+
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex align-items-center">
+                        <h4 class="mb-0 fw-bold text-dark">لوحة التحكم</h4>
+                    </div>
+                    <div class="text-muted small">
+                        آخر تحديث: <t t-esc="state.last_update"/>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="kpi_card bg-white shadow-sm rounded-3 p-3 position-relative overflow-hidden" t-on-click="() => this.openView()">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h2 class="fw-bold mb-0 text-primary"><t t-esc="state.stats.total_count || 0"/></h2>
+                                    <div class="text-muted small mt-1">إجمالي أرقام الشفرات</div>
+                                </div>
+                                <div class="kpi_icon_box bg-primary-light p-2 rounded">
+                                    <i class="fa fa-hashtag text-primary"></i>
+                                </div>
+                            </div>
+<!--                            <div class="mt-3 small text-success">-->
+<!--                                <i class="fa fa-arrow-up me-1"></i> &#45;&#45;-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="kpi_card bg-white shadow-sm rounded-3 p-3" t-on-click="() => this.openView('in_stock')">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h2 class="fw-bold mb-0 text-success"><t t-esc="state.stats.status_counts?.in_stock || 0"/></h2>
+                                    <div class="text-muted small mt-1">في المخزن</div>
+                                </div>
+                                <div class="kpi_icon_box bg-success-light p-2 rounded">
+<!--                                    <i class="fa fa-warehouse text-success"></i>-->
+                                    <i class="fa fa-home"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="kpi_card bg-white shadow-sm rounded-3 p-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h2 class="fw-bold mb-0 text-dark"><t t-esc="state.stats.company_count || 0"/></h2>
+                                    <div class="text-muted small mt-1">إجمالي الشركات</div>
+                                </div>
+                                <div class="kpi_icon_box bg-warning-light p-2 rounded">
+                                    <i class="fa fa-building text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+<!--                    <div class="col-md-3">-->
+<!--                        <div class="kpi_card bg-white shadow-sm rounded-3 p-3 border-start border-4 border-danger">-->
+<!--                            <div class="d-flex justify-content-between align-items-start">-->
+<!--                                <div>-->
+<!--                                    <h4 class="fw-bold mb-0">مجموعة ا...</h4>-->
+<!--                                    <div class="text-muted small mt-1">أكثر شركة تسجيلاً</div>-->
+<!--                                </div>-->
+<!--                                <div class="kpi_icon_box bg-danger-light p-2 rounded">-->
+<!--                                    <i class="fa fa-star text-danger"></i>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-7">
+                        <div class="card border-0 shadow-sm p-3 bg-white h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0"><i class="fa fa-bar-chart text-primary me-2"></i>توزيع الأرقام حسب الشركة</h6>
+                            </div>
+                            <div style="height: 250px;">
+                                <canvas t-ref="systemChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card border-0 shadow-sm p-3 bg-white h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="fw-bold mb-0"><i class="fa fa-pie-chart text-warning me-2"></i>النسب المئوية للشركات</h6>
+                            </div>
+                            <div style="height: 250px;">
+                                <canvas t-ref="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm bg-white h-100">
+                            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold mb-0"><i class="fa fa-history text-info me-2"></i>أحدث السجلات المضافة</h6>
+                            </div>
+                            <div class="p-0 overflow-auto" style="max-height: 300px;">
+                                <table class="table table-hover mb-0 small">
+                                    <tbody t-if="state.stats.recent_codes">
+                                        <t t-foreach="state.stats.recent_codes" t-as="code" t-key="code.id">
+                                            <tr>
+                                                <td class="align-middle">
+                                                    <div class="fw-bold"><t t-esc="code.code_number"/></div>
+                                                    <div class="text-muted x-small"><t t-esc="code.employee_name"/></div>
+                                                </td>
+                                                <td class="text-end align-middle">
+                                                    <span t-attf-class="badge rounded-pill bg-#{code.status_color} bg-opacity-10 text-#{FFFFFF}">
+                                                        <t t-esc="code.status_name"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm bg-white h-100">
+                            <div class="p-3 border-bottom">
+                                <h6 class="fw-bold mb-0"><i class="fa fa-tasks text-warning me-2"></i>إحصائيات الشركات</h6>
+                            </div>
+                            <div class="p-3">
+                                <t t-foreach="state.stats.company_stats || []" t-as="c_stat" t-key="c_stat.name">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1 small">
+                                            <span><t t-esc="c_stat.name"/></span>
+                                            <span class="fw-bold"><t t-esc="c_stat.count"/> سجل</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-dark" role="progressbar" t-attf-style="width: #{c_stat.percent}%"></div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

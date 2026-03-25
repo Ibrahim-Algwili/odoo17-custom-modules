@@ -5,11 +5,11 @@
         <field name="name">communication.codes.form</field>
         <field name="model">communication.codes</field>
         <field name="arch" type="xml">
-            <form string="إدارة شفرات الاتصالات" duplicate="false">
+            <form string="إدارة شفرات الاتصالات" duplicate="1">
                 <header>
                     <button name="action_create_new_version" string="إصدار شفرة جديدة" type="object"
                             class="oe_highlight"/>
-                    <button name="action_deliver" string="تسليم" type="object" 
+                    <button name="action_deliver" string="تسليم" type="object"
                             class="oe_highlight" invisible="code_status == 'delivered'"/>
                     <button name="action_suspend" string="إيقاف" type="object"
                             invisible="code_status in ('suspended', 'cancelled')"/>
@@ -18,15 +18,35 @@
                             confirm="هل أنت متأكد من إلغاء هذه الشفرة؟"/>
                     <button name="action_return_to_stock" string="إرجاع للمخزن" type="object"
                             invisible="code_status == 'in_stock'"/>
-                    <field name="code_status" widget="statusbar" 
+                    <field name="code_status" widget="statusbar"
                            statusbar_visible="in_stock,delivered,suspended,cancelled"
                            status_colors='{"in_stock":"success","delivered":"info","suspended":"warning","cancelled":"danger"}'/>
                 </header>
                 <sheet>
+                    <!-- Smart Buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button"
+                                name="action_current_employee_all_numbers"
+                                type="object"
+                                invisible="not employee_id"
+                                icon="oi-view-list"
+                                string="أرقام الموظف"/>
+                    </div>
+
+                    <!-- Web-Ribbon Widget -->
+                    <widget name="web_ribbon" title="في المخزن" bg_color="text-bg-info"
+                            invisible="code_status != 'in_stock' or not id or code_number == False"/>
+                    <widget name="web_ribbon" title="تم التسليم" bg_color="text-bg-success"
+                            invisible="code_status != 'delivered'"/>
+                    <widget name="web_ribbon" title="معلق" bg_color="text-bg-warning"
+                            invisible="code_status != 'suspended'"/>
+                    <widget name="web_ribbon" title="ملغي" bg_color="text-bg-danger"
+                            invisible="code_status != 'cancelled'"/>
+
                     <group string="معلومات الشفرة">
                         <group>
                             <field name="name" string="الرقم التسلسلي" readonly="1"/>
-                            <field name="code_number" string="رقم الشفرة" required="1"/>
+                            <field name="code_number" string="رقم الشفرة" required="1" widget="phone"/>
                             <field name="code_system" string="نظام الشفرة"/>
                             <field name="monthly_balance" string="الرصيد الشهري"/>
                         </group>
@@ -39,7 +59,7 @@
                                    readonly="1"/>
                         </group>
                     </group>
-                    
+
                     <group string="معلومات الموظف">
                         <group>
                             <field name="employee_id" string="الموظف" required="1"/>
@@ -52,10 +72,11 @@
                             <field name="delivery_user_id" string="سلمها" readonly="1"/>
                         </group>
                     </group>
-                    
+
                     <group string="ملاحظات">
-                        <field name="notes" string="ملاحظات" nolabel="1" placeholder="أضف ملاحظات هنا..."/>
+                        <field name="notes" nolabel="1" placeholder="أضف ملاحظات هنا..." colspan="2" widget="textarea"/>
                     </group>
+
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_ids" groups="base.group_user"/>
@@ -64,7 +85,7 @@
             </form>
         </field>
     </record>
-    
+
     <!-- Tree View -->
     <record id="view_communication_codes_tree" model="ir.ui.view">
         <field name="name">communication.codes.tree</field>
@@ -72,13 +93,15 @@
         <field name="arch" type="xml">
             <tree string="قائمة شفرات الاتصالات" sample="1" multi_edit="1">
                 <field name="name" string="الرقم التسلسلي"/>
-                <field name="code_number" string="رقم الشفرة"/>
+                <field name="code_number" string="رقم الشفرة" decoration-success="1"/>
                 <field name="employee_id" string="الموظف"/>
                 <field name="job_id" string="الوظيفة"/>
                 <field name="company_id" string="الشركة"/>
                 <field name="branch_id" string="الفرع"/>
                 <field name="city" string="المدينة"/>
-                <field name="code_system" string="نظام الشفرة"/>
+                <field name="code_system" string="نظام الشفرة" widget="badge"
+                       decoration-info="1"
+                />
                 <field name="monthly_balance" string="الرصيد"/>
                 <field name="code_status" string="الحالة" widget="badge"
                        decoration-success="code_status == 'delivered'"
@@ -86,11 +109,11 @@
                        decoration-danger="code_status in ('suspended', 'cancelled')"/>
                 <field name="code_version" string="الإصدار"/>
                 <field name="delivery_date" string="تاريخ التسليم"/>
-                <field name="active" invisible="1"/>
+                <field name="active" optional="hide"/>
             </tree>
         </field>
     </record>
-    
+
     <!-- Search View -->
     <record id="view_communication_codes_search" model="ir.ui.view">
         <field name="name">communication.codes.search</field>
@@ -100,18 +123,19 @@
                 <field name="code_number" string="رقم الشفرة"/>
                 <field name="employee_id" string="الموظف"/>
                 <field name="name" string="الرقم التسلسلي"/>
-                
+
                 <filter string="في المخزن" name="in_stock" domain="[('code_status', '=', 'in_stock')]"/>
                 <filter string="تم التسليم" name="delivered" domain="[('code_status', '=', 'delivered')]"/>
                 <filter string="موقوفة" name="suspended" domain="[('code_status', '=', 'suspended')]"/>
                 <filter string="ملغاة" name="cancelled" domain="[('code_status', '=', 'cancelled')]"/>
-                
+
                 <filter string="دفع مسبق" name="prepaid" domain="[('code_system', '=', 'prepaid')]"/>
-                <filter string="فاتورة شهرية" name="monthly_invoice" domain="[('code_system', '=', 'monthly_invoice')]"/>
+                <filter string="فاتورة شهرية" name="monthly_invoice"
+                        domain="[('code_system', '=', 'monthly_invoice')]"/>
                 <filter string="أخرى" name="other" domain="[('code_system', '=', 'other')]"/>
-                
+
                 <filter string="الإصدار الجديد" name="new_version" domain="[('code_version', '=', 'new_version')]"/>
-                
+
                 <group string="تجميع حسب">
                     <filter string="الموظف" name="group_employee" context="{'group_by': 'employee_id'}"/>
                     <filter string="الفرع" name="group_branch" context="{'group_by': 'branch_id'}"/>
@@ -120,7 +144,7 @@
                     <filter string="نظام الشفرة" name="group_system" context="{'group_by': 'code_system'}"/>
                     <filter string="الشركة" name="group_company" context="{'group_by': 'company_id'}"/>
                 </group>
-                
+
                 <searchpanel>
                     <field name="code_status" string="الحالة" select="multi" icon="fa fa-folder"/>
                     <field name="code_system" string="نظام الشفرة" select="multi" icon="fa fa-tag"/>
@@ -129,7 +153,7 @@
             </search>
         </field>
     </record>
-    
+
     <!-- Kanban View -->
     <record id="view_communication_codes_kanban" model="ir.ui.view">
         <field name="name">communication.codes.kanban</field>
@@ -143,10 +167,12 @@
                         <div class="oe_kanban_global_click">
                             <div class="oe_kanban_header">
                                 <div class="oe_kanban_title">
-                                    <b><field name="code_number"/></b>
+                                    <b>
+                                        <field name="code_number"/>
+                                    </b>
                                 </div>
                                 <div class="oe_kanban_title_right">
-                                    <field name="code_status" widget="label_selection"
+                                    <field name="code_status" widget="label_selection" style="margin-bottom: 5px;"
                                            options="{'classes': {
                                                'in_stock': 'success',
                                                'delivered': 'info',
@@ -156,11 +182,19 @@
                                 </div>
                             </div>
                             <div class="oe_kanban_body">
-                                <div><field name="employee_id"/></div>
-                                <div><field name="company_id"/></div>
-                                <div><field name="branch_id"/></div>
+                                <div>
+                                    <field name="employee_id" widget="many2one_avatar_user" style="margin-right: 7px;"/>
+                                    <field name="employee_id"/>
+                                </div>
+                                <div>
+                                    <field name="company_id"/>
+                                </div>
+                                <div>
+                                    <field name="branch_id"/>
+                                </div>
                                 <div t-if="record.monthly_balance.raw_value">
-                                    الرصيد: <field name="monthly_balance"/>
+                                    الرصيد:
+                                    <field name="monthly_balance"/>
                                 </div>
                             </div>
                         </div>
@@ -168,5 +202,36 @@
                 </templates>
             </kanban>
         </field>
+    </record>
+
+    <!-- Graph View -->
+    <record id="view_communication_codes_graph" model="ir.ui.view">
+        <field name="name">communication.codes.graph</field>
+        <field name="model">communication.codes</field>
+        <field name="arch" type="xml">
+            <graph string="تحليل شفرات الاتصالات" type="bar" sample="1">
+                <field name="code_status"/>
+                <field name="monthly_balance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="view_communication_codes_pivot" model="ir.ui.view">
+        <field name="name">communication.codes.pivot</field>
+        <field name="model">communication.codes</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل شفرات الاتصالات" sample="1">
+                <field name="branch_id" type="row"/>
+                <field name="code_status" type="col"/>
+                <field name="monthly_balance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Client Action for Dashboard -->
+    <record id="action_communication_dashboard" model="ir.actions.client">
+        <field name="name">لوحة البيانات</field>
+        <field name="tag">communication_codes_dashboard</field>
     </record>
 </odoo>
